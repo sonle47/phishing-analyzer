@@ -18,15 +18,7 @@ class Case(Base):
     notes = Column(Text)
 
     def to_dict(self):
-        return {
-            "id": self.id,
-            "sender": self.sender,
-            "subject": self.subject,
-            "body": self.body,
-            "urls": self.urls,
-            "signals": self.signals,
-            "score": self.score,
-            "category": self.category,
-            "status": self.status,
-            "notes": self.notes,
-        }
+        result = {}
+        for column in self.__table__.columns:
+            result[column.name] = getattr(self, column.name)
+        return result
