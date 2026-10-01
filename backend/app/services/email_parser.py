@@ -63,15 +63,11 @@ def parse_raw_eml(raw_eml):
     if not sender:
         sender = msg.get("From", "unknown")
 
-    headers = {}
-    for key, value in msg.items():
-        headers[key] = value
-
     email = {
         "sender": sender,
         "sender_display_name": sender_name or None,
         "subject": msg.get("Subject", "(no subject)"),
-        "headers": headers,
+        "headers": msg,
         "body_text": body_text,
         "urls": extract_urls(body_text, body_html),
     }

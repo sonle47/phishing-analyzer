@@ -13,8 +13,6 @@ SHORTENERS = ["bit.ly", "tinyurl.com", "t.co", "goo.gl", "ow.ly", "is.gd", "buff
 def get_auth_result(headers, key):
     raw = headers.get("Authentication-Results")
     if not raw:
-        raw = headers.get("authentication-results")
-    if not raw:
         return None
 
     match = re.search(key + r"=(\w+)", raw, re.IGNORECASE)
@@ -41,8 +39,6 @@ def evaluate(sender, sender_display_name, subject, body_text, urls, headers):
     score = score + auth_fail_count * 15
 
     reply_to = headers.get("Reply-To")
-    if not reply_to:
-        reply_to = headers.get("reply-to")
     reply_to_mismatch = False
     if reply_to and sender not in reply_to:
         reply_to_mismatch = True
