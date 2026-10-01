@@ -1,0 +1,6 @@
+*
+!.gitignore
+!requirements.txt
+!app/
+!app/**/
+!app/**/*.py
