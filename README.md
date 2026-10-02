@@ -46,7 +46,8 @@ worked out the score I expected first then compared with the one provided by the
 
 
 ### Database
-![alt text](image.png)
+<img width="1467" height="730" alt="image" src="https://github.com/user-attachments/assets/b3a2984f-2b8a-4b08-98e3-78d380fd0742" />
+
 
 
 ## Running it
