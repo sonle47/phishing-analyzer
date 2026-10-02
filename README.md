@@ -9,7 +9,7 @@
 >
 > Every `/api/v1/...` endpoint needs an `X-API-Key` header, so the docs page
 > loads for everyone but those endpoints answer `401` without the key. Only
-> `/health` and `/demo/cases` are open to everyone.
+> `/health` is open to everyone.
 
 That poster of the hacker , the one with the hoodie and the code glowing in neon, that’s what got me interested in cybersecurity. Then every AI tutorial I enrolled used the same example “Is this email phishing or not?” for classification. One of my important emails ended up in spam, so I decided to build a small backend that makes that decision on its own to answer whether an email is phishing as a practical project as well.
 
@@ -33,6 +33,21 @@ It's a backend only, built with **FastAPI**. I test it with the built-in Swagger
 - You can list cases, create a case and update a case with status after scoring with validation
 
 ## Testing
+I tested the phishing detector on **20 different emails**:
+5 malicious, 5 suspicious, 5 benign and 5 with nothing suspicious. For each one I
+worked out the score I expected first then comparing with the one provided by the phishing analyzer. All 20 matched.
+
+| Group | Scores | What those emails cover |
+|---|---|---|
+| Malicious (5) | 74 to 100 | Failed sender checks, spoofed names, urgent language, shortened links, raw IP links |
+| Suspicious (5) | 36 to 49 | A mix of several weaker signals |
+| Benign (5) | 8 to 31 | One or two small signals each, including one at 31, just under the 35 line |
+| Nothing suspicious (5) | 0 | A plain email, all checks passing, HTML only, no sender, an attachment |
+
+
+### Database
+![alt text](image.png)
+
 
 ## Running it
 1. Backend (this is all you need locally; the defaults work):
