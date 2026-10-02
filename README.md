@@ -100,7 +100,16 @@ backend/
 ```
 
 ## What's next
+I'm building the next step in my own branch, `ml-model`. Right now the API only uses
+my hand-written rules, and I want to add a model of my own that learns to tell
+whether an email is phishing or not.
 
+- I pull down thousands of labeled phishing and safe emails from a public dataset on
+  Hugging Face, about 17,500 after cleaning out the empty and duplicate ones.
+- I split them into 75% to train the model (13,152 emails) and 25% to test it
+  (4,384 emails), so I can check how it does on emails it has never seen.
+- I'm now implementing the model training. The plan is to run it together with the
+  hand-written rules, so every email gets two opinions and I can compare them.
 
 ## Data and credits
 The practice data for the model is the
