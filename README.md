@@ -39,14 +39,14 @@ worked out the score I expected first then comparing with the one provided by th
 
 | Group | Scores | What those emails cover |
 |---|---|---|
-| Malicious (5) | 74 to 100 | Failed sender checks, spoofed names, urgent language, shortened links, raw IP links |
-| Suspicious (5) | 36 to 49 | A mix of several weaker signals |
-| Benign (5) | 8 to 31 | One or two small signals each, including one at 31, just under the 35 line |
-| Nothing suspicious (5) | 0 | A plain email, all checks passing, HTML only, no sender, an attachment |
+| Malicious (5) | 74 to 100 | Fake PayPal, bank and Microsoft emails, a CEO gift card scam and a prize scam. They all push you to act fast, and most of them fail the sender checks (SPF, DKIM, DMARC) |
+| Suspicious (5) | 36 to 49 | A few warning signs, but nothing that settles it. For example a fake-looking sender name with a shortened link, or an urgent email that replies to a different address |
+| Benign (5) | 8 to 31 | Normal emails with one small oddity, like a newsletter that replies to a different address or a sale that says "limited time". One scores 31, right under the 35 cutoff, on purpose |
+| Nothing suspicious (5) | 0 | Ordinary emails in different formats: plain text, HTML only, no sender at all, a PDF attached, and one where every check passes. I wanted to see the detector stay calm and not crash |
 
 
 ### Database
-![alt text](image.png)
+![The cases table in Neon: 20 rows, with the scores I expected](neon-cases.png)
 
 
 ## Running it
