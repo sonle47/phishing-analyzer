@@ -3,7 +3,8 @@ from app.services import email_parser, heuristics, scoring
 
 
 def analyze_submission(submission):
-    email = email_parser.parse_raw_eml(submission.raw_eml)
+    raw_eml = submission.raw_eml.replace("\x00", "")
+    email = email_parser.parse_raw_eml(raw_eml)
 
     signals = heuristics.evaluate(
         email["sender"],
