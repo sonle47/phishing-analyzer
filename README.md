@@ -35,7 +35,7 @@ It's a backend only, built with **FastAPI**. I test it with the built-in Swagger
 ## Testing
 I tested the phishing detector on **20 different emails**:
 5 malicious, 5 suspicious, 5 benign and 5 with nothing suspicious. For each one I
-worked out the score I expected first then comparing with the one provided by the phishing analyzer. All 20 matched.
+worked out the score I expected first then compared with the one provided by the phishing analyzer. All 20 matched.
 
 | Group | Scores | What those emails cover |
 |---|---|---|
@@ -46,7 +46,7 @@ worked out the score I expected first then comparing with the one provided by th
 
 
 ### Database
-![The cases table in Neon: 20 rows, with the scores I expected](neon-cases.png)
+![alt text](image.png)
 
 
 ## Running it
