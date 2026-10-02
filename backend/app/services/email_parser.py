@@ -34,13 +34,13 @@ def html_to_text(html):
 
 
 def parse_raw_eml(raw_eml):
-    msg = message_from_string(raw_eml, policy=policy.default)
+    message = message_from_string(raw_eml, policy=policy.default)
 
     body_text = None
     body_html = None
 
-    if msg.is_multipart():
-        for part in msg.walk():
+    if message.is_multipart():
+        for part in message.walk():
             if part.get_content_disposition() == "attachment":
                 continue
             content_type = part.get_content_type()
@@ -49,26 +49,26 @@ def parse_raw_eml(raw_eml):
             elif content_type == "text/html" and body_html is None:
                 body_html = part.get_content()
     else:
-        if msg.get_content_type() == "text/html":
-            body_html = msg.get_content()
+        if message.get_content_type() == "text/html":
+            body_html = message.get_content()
         else:
-            body_text = msg.get_content()
+            body_text = message.get_content()
 
     if body_text is None and body_html is not None:
         body_text = html_to_text(body_html)
 
-    sender_name, sender_address = parseaddr(msg.get("From", ""))
+    display_name, sender_address = parseaddr(message.get("From", ""))
 
     sender = sender_address
     if not sender:
-        sender = msg.get("From", "unknown")
+        sender = message.get("From", "unknown")
 
-    email = {
+    parsed_email = {
         "sender": sender,
-        "sender_display_name": sender_name or None,
-        "subject": msg.get("Subject", "(no subject)"),
-        "headers": msg,
+        "sender_display_name": display_name or None,
+        "subject": message.get("Subject", "(no subject)"),
+        "headers": message,
         "body_text": body_text,
         "urls": extract_urls(body_text, body_html),
     }
-    return email
+    return parsed_email

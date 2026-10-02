@@ -5,7 +5,7 @@ class EmailSubmission(BaseModel):
     raw_eml: str
 
 
-class VerdictUpdate(BaseModel):
+class CaseUpdate(BaseModel):
     status: str
     notes: str | None = None
 

@@ -2,25 +2,25 @@ from app.models import Case
 from app.services import email_parser, heuristics, scoring
 
 
-def analyze_submission(submission):
+def build_case(submission):
     raw_eml = submission.raw_eml.replace("\x00", "")
-    email = email_parser.parse_raw_eml(raw_eml)
+    parsed_email = email_parser.parse_raw_eml(raw_eml)
 
-    signals = heuristics.evaluate(
-        email["sender"],
-        email["sender_display_name"],
-        email["subject"],
-        email["body_text"],
-        email["urls"],
-        email["headers"],
+    signals = heuristics.find_signals(
+        parsed_email["sender"],
+        parsed_email["sender_display_name"],
+        parsed_email["subject"],
+        parsed_email["body_text"],
+        parsed_email["urls"],
+        parsed_email["headers"],
     )
-    score, category = scoring.categorize(signals)
+    score, category = scoring.get_score_and_category(signals)
 
     return Case(
-        sender=email["sender"],
-        subject=email["subject"],
-        body=email["body_text"],
-        urls=email["urls"],
+        sender=parsed_email["sender"],
+        subject=parsed_email["subject"],
+        body=parsed_email["body_text"],
+        urls=parsed_email["urls"],
         signals=signals,
         score=score,
         category=category,
@@ -28,8 +28,8 @@ def analyze_submission(submission):
     )
 
 
-def process_submission(db, submission):
-    case = analyze_submission(submission)
+def create_case(db, submission):
+    case = build_case(submission)
     db.add(case)
     db.commit()
     db.refresh(case)

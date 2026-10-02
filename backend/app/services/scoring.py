@@ -1,4 +1,4 @@
-def categorize(signals):
+def get_score_and_category(signals):
     score = float(signals.get("heuristic_score", 0))
     score = round(score, 1)
 
