@@ -7,6 +7,20 @@ URGENCY_PHRASES = [
     "limited time", "final notice", "wire transfer", "gift card",
 ]
 
+SPAM_WORDS = [
+    "levitra", "medications", "pharmacy", "cialis", "lottery",
+    "viagra", "corel", "meds", "opt-out", "mailings",
+    "photoshop", "order now", "mortgage", "refinance", "oem",
+    "prescription", "pills", "anticipates", "macromedia", "acrobat",
+    "drugs",
+]
+
+FREE_MAIL_DOMAINS = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "aol.com", "icloud.com", "proton.me", "protonmail.com"]
+
+ORGANIZATION_WORDS = ["support", "team", "department", "billing", "security", "service", "helpdesk", "admin", "official", "customer"]
+
+LOOKALIKE_SWAPS = [("0", "o"), ("3", "e"), ("5", "s"), ("4", "a"), ("7", "t"), ("rn", "m")]
+
 URL_SHORTENER_DOMAINS = ["bit.ly", "tinyurl.com", "t.co", "goo.gl", "ow.ly", "is.gd", "buff.ly"]
 
 
@@ -19,6 +33,13 @@ def get_auth_result(headers, check_name):
     if match:
         return match.group(1).lower()
     return None
+
+
+def undo_lookalikes(domain):
+    plain = domain
+    for fake, real in LOOKALIKE_SWAPS:
+        plain = plain.replace(fake, real)
+    return [plain.replace("1", "l"), plain.replace("1", "i")]
 
 
 def find_signals(sender, sender_display_name, subject, body_text, urls, headers):
@@ -47,6 +68,8 @@ def find_signals(sender, sender_display_name, subject, body_text, urls, headers)
         score = score + 10
 
     display_name_spoof = False
+    lookalike_domain = False
+    free_mail_organization = False
     if sender_display_name:
         display_name = sender_display_name.lower()
         sender_domain = ""
@@ -55,8 +78,24 @@ def find_signals(sender, sender_display_name, subject, body_text, urls, headers)
         name_looks_like_website = re.search(r"[a-z0-9.-]+\.(com|net|org|io)", display_name)
         if name_looks_like_website and sender_domain != "" and sender_domain not in display_name:
             display_name_spoof = True
+        for word in re.findall(r"[a-z]{4,}", display_name):
+            if word in sender_domain:
+                continue
+            for guess in undo_lookalikes(sender_domain):
+                if word in guess:
+                    lookalike_domain = True
+        if sender_domain in FREE_MAIL_DOMAINS:
+            for word in ORGANIZATION_WORDS:
+                if word in display_name:
+                    free_mail_organization = True
     signals["display_name_spoof"] = display_name_spoof
     if display_name_spoof:
+        score = score + 15
+    signals["lookalike_domain"] = lookalike_domain
+    if lookalike_domain:
+        score = score + 35
+    signals["free_mail_organization"] = free_mail_organization
+    if free_mail_organization:
         score = score + 15
 
     if body_text is None:
@@ -69,9 +108,21 @@ def find_signals(sender, sender_display_name, subject, body_text, urls, headers)
     signals["urgency_phrases"] = urgency_phrases_found
     score = score + min(len(urgency_phrases_found) * 8, 24)
 
+    spam_words_found = []
+    for word in SPAM_WORDS:
+        if re.search(r"\b" + re.escape(word), subject_and_body):
+            spam_words_found.append(word)
+    signals["spam_words"] = spam_words_found
+    if len(spam_words_found) > 0:
+        score = score + 35
+
     shortened_urls = []
     for url in urls:
-        if urlparse(url).netloc.lower() in URL_SHORTENER_DOMAINS:
+        try:
+            domain = urlparse(url).netloc.lower()
+        except ValueError:
+            continue
+        if domain in URL_SHORTENER_DOMAINS:
             shortened_urls.append(url)
     signals["shortened_urls"] = shortened_urls
     signals["url_count"] = len(urls)

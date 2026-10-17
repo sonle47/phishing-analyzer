@@ -11,7 +11,7 @@
 > loads for everyone but those endpoints answer `401` without the key. Only
 > `/health` is open to everyone.
 
-That poster of the hacker , the one with the hoodie and the code glowing in neon, that’s what got me interested in cybersecurity. Then every AI tutorial I enrolled used the same example “Is this email phishing or not?” for classification. One of my important emails ended up in spam, so I decided to build a small backend that makes that decision on its own to answer whether an email is phishing as a practical project as well.
+Every AI tutorial I enrolled used the same example “Is this email phishing or not?” for classification. I was curious on how some emails ended up in spam folder automatically, so I decided to build a small backend that makes that decision on its own to answer whether an email is phishing as a practical project as well.
 
 - How an email is really built, and which parts an attacker can fake
 - What email security rules exist (SPF, DKIM, DMARC, Reply-To, link tricks) and
